@@ -61,6 +61,7 @@
             BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/viperman/", "viperman.glb").then((result) => {
                 var viperman =  result.meshes[0];
                 viperman.addRotation(0,3,0)
+                viperman.position = new BABYLON.Vector3(0,0,5)
             })
 
                        //MUSIC IN THE GAME
