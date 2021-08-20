@@ -59,7 +59,15 @@
             // sphere.position.y = 2;
             // sphere.position.z = 5;
             BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/viperman/", "viperman.glb").then((result) => {
+                var viperman =  result.meshes[0];
+                viperman.addRotation(0,3,0)
             })
+
+                       //MUSIC IN THE GAME
+            var gameMusic = new BABYLON.Sound("gameMusic", "TRON Legacy (End Titles).mp3", scene, null, {
+                loop: true,
+                autoplay: true
+            });
         
             const xr = await scene.createDefaultXRExperienceAsync({
                 uiOptions: {
