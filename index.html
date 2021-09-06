@@ -53,90 +53,20 @@
             camera.attachControl(canvas, true);
             var light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
             light.intensity = 0.7;
-            
-            
-            // var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
-            // sphere.position.y = 2;
-            // sphere.position.z = 5;
-            BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/viperman/", "viperman.glb").then((result) => {
-                var viperman =  result.meshes[0];
-                viperman.addRotation(0,3,0)
-                viperman.position = new BABYLON.Vector3(0,-2,5)
-            })
-
-                       //MUSIC IN THE GAME
-            var gameMusic = new BABYLON.Sound("gameMusic", "TRON Legacy (End Titles).mp3", scene, null, {
-                loop: true,
-                autoplay: true
-            });
+            var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
+            sphere.position.y = 2;
+            sphere.position.z = 5;
         
-            var xr = await scene.createDefaultXRExperienceAsync({
-        uiOptions: {
-            sessionMode: "immersive-ar",
-            referenceSpaceType: "local-floor"
-        },
-        optionalFeatures: true
-    });
-
-    const fm = xr.baseExperience.featuresManager;
-
-    const xrPlanes = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, "latest");
-
-    const planes = [];
-
-    xrPlanes.onPlaneAddedObservable.add(plane => {
-        plane.polygonDefinition.push(plane.polygonDefinition[0]);
-        var polygon_triangulation = new BABYLON.PolygonMeshBuilder("name", plane.polygonDefinition.map((p) => new BABYLON.Vector2(p.x, p.z)), scene);
-        var polygon = polygon_triangulation.build(false, 0.01);
-        plane.mesh = polygon; 
-        planes[plane.id] = (plane.mesh);
-        const mat = new BABYLON.StandardMaterial("mat", scene);
-        mat.alpha = 0.5;
-        // pick a random color
-        mat.diffuseColor = BABYLON.Color3.Random();
-        polygon.createNormals();
-        plane.mesh.material = mat;
-
-        plane.mesh.rotationQuaternion = new BABYLON.Quaternion();
-        plane.transformationMatrix.decompose(plane.mesh.scaling, plane.mesh.rotationQuaternion, plane.mesh.position);
-    });
-
-    xrPlanes.onPlaneUpdatedObservable.add(plane => {
-        let mat;
-        if (plane.mesh) {
-            // keep the material, dispose the old polygon
-            mat = plane.mesh.material;
-            plane.mesh.dispose(false, false);
-        }
-        const some = plane.polygonDefinition.some(p => !p);
-        if (some) {
-            return;
-        }
-        plane.polygonDefinition.push(plane.polygonDefinition[0]);
-        var polygon_triangulation = new BABYLON.PolygonMeshBuilder("name", plane.polygonDefinition.map((p) => new BABYLON.Vector2(p.x, p.z)), scene);
-        var polygon = polygon_triangulation.build(false, 0.01);
-        polygon.createNormals();
-        plane.mesh = polygon;
-        planes[plane.id] = (plane.mesh);
-        plane.mesh.material = mat;
-        plane.mesh.rotationQuaternion = new BABYLON.Quaternion();
-        plane.transformationMatrix.decompose(plane.mesh.scaling, plane.mesh.rotationQuaternion, plane.mesh.position);
-    })
-
-    xrPlanes.onPlaneRemovedObservable.add(plane => {
-        if (plane && planes[plane.id]) {
-            planes[plane.id].dispose()
-        }
-    })
-
-    xr.baseExperience.sessionManager.onXRSessionInit.add(() => {
-        planes.forEach(plane => plane.dispose());
-        while (planes.pop()) { };
-    });
+            const xr = await scene.createDefaultXRExperienceAsync({
+                uiOptions: {
+                    sessionMode: 'immersive-ar'
+                }
+            });
         
             return scene;
         };
                 window.initFunction = async function() {
+                    
                     
                     var asyncEngineCreation = async function() {
                         try {
