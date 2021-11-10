@@ -102,7 +102,6 @@
         const planes = [];
 
         xrPlanes.onPlaneAddedObservable.add((plane) => {
-          alert("sss");
           plane.polygonDefinition.push(plane.polygonDefinition[0]);
           var polygon_triangulation = new BABYLON.PolygonMeshBuilder(
             "name",
@@ -125,7 +124,7 @@
             plane.mesh.rotationQuaternion,
             plane.mesh.position
           );
-          alert("sss");
+          console.log("radi1");
         });
 
         xrPlanes.onPlaneUpdatedObservable.add((plane) => {
@@ -134,12 +133,12 @@
             // keep the material, dispose the old polygon
             mat = plane.mesh.material;
             plane.mesh.dispose(false, false);
-            alert("sss");
+            console.log("radi2");
           }
           const some = plane.polygonDefinition.some((p) => !p);
           if (some) {
             return;
-            alert("sss");
+            console.log("radi2");
           }
           plane.polygonDefinition.push(plane.polygonDefinition[0]);
           var polygon_triangulation = new BABYLON.PolygonMeshBuilder(
@@ -158,23 +157,23 @@
             plane.mesh.rotationQuaternion,
             plane.mesh.position
           );
-          alert("sss");
+          console.log("radi2");
         });
 
         xrPlanes.onPlaneRemovedObservable.add((plane) => {
           if (plane && planes[plane.id]) {
             planes[plane.id].dispose();
-            alert("sss");
+            console.log("radi2");
           }
-          alert("sss");
+          console.log("radi2");
         });
 
         xr.baseExperience.sessionManager.onXRSessionInit.add(() => {
           planes.forEach((plane) => plane.dispose());
           while (planes.pop()) {}
-          alert("sss");
+          console.log("radi2");
         });
-        alert("sss");
+        console.log("radi2");
 
         return scene;
       };
