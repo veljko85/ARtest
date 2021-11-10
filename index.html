@@ -56,34 +56,99 @@
         var scene = new BABYLON.Scene(engine);
         var camera = new BABYLON.FreeCamera(
           "camera1",
-          new BABYLON.Vector3(0, 5, -10),
+          new BABYLON.Vector3(0, 1, -5),
           scene
         );
         camera.setTarget(BABYLON.Vector3.Zero());
         camera.attachControl(canvas, true);
         var light = new BABYLON.HemisphericLight(
-          "light1",
+          "light",
           new BABYLON.Vector3(0, 1, 0),
           scene
         );
-        light.intensity = 0.7;
 
-        BABYLON.SceneLoader.ImportMeshAsync(
-          "",
-          "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/pizza_bigboss_pancho/",
-          "scene.gltf"
-        ).then((result) => {
-          var pizza = result.meshes[0];
-          pizza.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5);
-          pizza.addRotation(0, 3, 0);
-          pizza.position = new BABYLON.Vector3(0, 0, 1);
-        });
-
-        const xr = await scene.createDefaultXRExperienceAsync({
+        var xr = await scene.createDefaultXRExperienceAsync({
           uiOptions: {
             sessionMode: "immersive-ar",
+            referenceSpaceType: "local-floor",
           },
+          optionalFeatures: true,
         });
+
+        const fm = xr.baseExperience.featuresManager;
+
+        const xrTest = fm.enableFeature(BABYLON.WebXRHitTest.Name, "latest");
+        const anchors = fm.enableFeature(
+          BABYLON.WebXRAnchorSystem.Name,
+          "latest"
+        );
+
+        const model = await BABYLON.SceneLoader.ImportMeshAsync(
+          "",
+          "https://raw.githubusercontent.com/ZwingliJones/samplewebxr/master/",
+          "SingleSkull_.gltf",
+          scene
+        );
+
+        let b = model.meshes[0];
+
+        b.setEnabled(true);
+
+        const marker = BABYLON.MeshBuilder.CreateTorus("marker", {
+          diameter: 0.12,
+          thickness: 0.025,
+        });
+        marker.isVisible = false;
+        marker.rotationQuaternion = new BABYLON.Quaternion();
+
+        let hitTest;
+
+        xrTest.onHitTestResultObservable.add((results) => {
+          if (results.length) {
+            marker.isVisible = true;
+            hitTest = results[0];
+
+            hitTest.transformationMatrix.decompose(
+              undefined,
+              b.rotationQuaternion,
+              b.position
+            );
+            hitTest.transformationMatrix.decompose(
+              undefined,
+              marker.rotationQuaternion,
+              marker.position
+            );
+          } else {
+            marker.isVisible = false;
+            hitTest = undefined;
+          }
+        });
+
+        if (anchors) {
+          anchors.onAnchorAddedObservable.add((anchor) => {
+            b.isVisible = true;
+            b.setEnabled(true);
+            anchor.attachedNode = b;
+          });
+
+          anchors.onAnchorRemovedObservable.add((anchor) => {
+            console.log("disposing", anchor);
+            if (anchor) {
+              anchor.attachedNode.isVisible = false;
+              anchor.attachedNode.dispose();
+            }
+          });
+        }
+
+        scene.onPointerDown = (evt, pickInfo) => {
+          if (
+            hitTest &&
+            anchors &&
+            xr.baseExperience.state === BABYLON.WebXRState.IN_XR
+          ) {
+            anchors.addAnchorPointUsingHitTestResultAsync(hitTest);
+          }
+        };
 
         return scene;
       };
