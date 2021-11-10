@@ -40,6 +40,7 @@
   <body>
     <canvas id="renderCanvas"></canvas>
     <script>
+      alert("sss");
       var canvas = document.getElementById("renderCanvas");
 
       var engine = null;
@@ -124,7 +125,7 @@
             plane.mesh.rotationQuaternion,
             plane.mesh.position
           );
-          console.log("radi1");
+          alert("sss");
         });
 
         xrPlanes.onPlaneUpdatedObservable.add((plane) => {
@@ -133,12 +134,12 @@
             // keep the material, dispose the old polygon
             mat = plane.mesh.material;
             plane.mesh.dispose(false, false);
-            console.log("radi2");
+            alert("sss");
           }
           const some = plane.polygonDefinition.some((p) => !p);
           if (some) {
             return;
-            console.log("radi2");
+            alert("sss");
           }
           plane.polygonDefinition.push(plane.polygonDefinition[0]);
           var polygon_triangulation = new BABYLON.PolygonMeshBuilder(
@@ -157,23 +158,23 @@
             plane.mesh.rotationQuaternion,
             plane.mesh.position
           );
-          console.log("radi2");
+          alert("sss");
         });
 
         xrPlanes.onPlaneRemovedObservable.add((plane) => {
           if (plane && planes[plane.id]) {
             planes[plane.id].dispose();
-            console.log("radi2");
+            alert("sss");
           }
-          console.log("radi2");
+          alert("sss");
         });
 
         xr.baseExperience.sessionManager.onXRSessionInit.add(() => {
           planes.forEach((plane) => plane.dispose());
           while (planes.pop()) {}
-          console.log("radi2");
+          alert("sss");
         });
-        console.log("radi2");
+        alert("sss");
 
         return scene;
       };
