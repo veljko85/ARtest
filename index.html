@@ -81,18 +81,6 @@
           pizza.position = new BABYLON.Vector3(0, 0, 1);
         });
 
-        //MUSIC IN THE GAME
-        var gameMusic = new BABYLON.Sound(
-          "gameMusic",
-          "TRON Legacy (End Titles).mp3",
-          scene,
-          null,
-          {
-            loop: true,
-            autoplay: true,
-          }
-        );
-
         const xr = await scene.createDefaultXRExperienceAsync({
           uiOptions: {
             sessionMode: "immersive-ar",
