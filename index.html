@@ -83,9 +83,21 @@
           3,
           5
         );
-        var box = BABYLON.MeshBuilder.CreateBox("box", { size: 5.0 }, scene);
-        box.parent = trackedNode;
-        box.position.z += 2.5;
+        // var box = BABYLON.MeshBuilder.CreateBox("box", { size: 5.0 }, scene);
+        // box.parent = trackedNode;
+        // box.position.z += 2.5;
+
+        BABYLON.SceneLoader.ImportMeshAsync(
+          "",
+          "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/pizza3/",
+          "pizza3.glb"
+        ).then((result) => {
+          var pizza = result.meshes[0];
+          pizza.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5);
+          pizza.addRotation(0, 0, 0);
+          pizza.position = new BABYLON.Vector3(0, 0, 1);
+          pizza.parent = trackedNode;
+        });
         tracker.startTracking();
 
         return scene;
