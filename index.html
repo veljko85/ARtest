@@ -81,13 +81,13 @@
 
         BABYLON.SceneLoader.ImportMeshAsync(
           "",
-          "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/pizza2/",
-          "pizza2.glb"
+          "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/pizza1/",
+          "pizza1.glb"
         ).then((result) => {
           var pizza = result.meshes[0];
-          pizza.scaling = new BABYLON.Vector3(0.02, 0.02, 0.02);
+          pizza.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5);
           pizza.addRotation(0, 0, 0);
-          pizza.position = new BABYLON.Vector3(0, 0, 0);
+          pizza.position = new BABYLON.Vector3(0, 0, 1);
         });
 
         const xr = await scene.createDefaultXRExperienceAsync({
