@@ -68,15 +68,26 @@
         );
         light.intensity = 0.7;
 
+        // BABYLON.SceneLoader.ImportMeshAsync(
+        //   "",
+        //   "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/pizza_bigboss_pancho/",
+        //   "pizza.glb"
+        // ).then((result) => {
+        //   var pizza = result.meshes[0];
+        //   pizza.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5);
+        //   pizza.addRotation(0, 0, 0);
+        //   pizza.position = new BABYLON.Vector3(0, 0, 1);
+        // });
+
         BABYLON.SceneLoader.ImportMeshAsync(
           "",
-          "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/pizza_bigboss_pancho/",
-          "pizza.glb"
+          "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/viperman/",
+          "viperman.glb"
         ).then((result) => {
           var pizza = result.meshes[0];
-          pizza.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5);
+          pizza.scaling = new BABYLON.Vector3(1, 1, 1);
           pizza.addRotation(0, 0, 0);
-          pizza.position = new BABYLON.Vector3(0, 0, 1);
+          pizza.position = new BABYLON.Vector3(0, 0, 0);
         });
 
         const xr = await scene.createDefaultXRExperienceAsync({
