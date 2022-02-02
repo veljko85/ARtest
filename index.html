@@ -37,9 +37,17 @@
         height: 100vh;
         touch-action: none;
       }
+      #cover {
+        width: 100vw;
+        height: 100vh;
+        background-color: red;
+        position: absolute;
+        z-index: 5;
+      }
     </style>
   </head>
   <body>
+    <div id="cover"></div>
     <canvas id="renderCanvas"></canvas>
     <script>
       var canvas = document.getElementById("renderCanvas");
