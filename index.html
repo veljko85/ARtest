@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Babylon.js sample code</title>
+    <title>AR Test</title>
 
     <!-- Babylon.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
@@ -35,19 +37,10 @@
         height: 100%;
         touch-action: none;
       }
-      #testDiv {
-        width: 100px;
-        height: 100px;
-        background-color: red;
-        position: absolute;
-        left: 20%;
-        top: 20%;
-      }
     </style>
   </head>
   <body>
     <canvas id="renderCanvas"></canvas>
-    <div id="testDiv"></div>
     <script>
       var canvas = document.getElementById("renderCanvas");
 
@@ -97,22 +90,17 @@
           BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
         var panel = new BABYLON.GUI.StackPanel();
-        panel.width = "200px";
+        panel.width = "300px";
         panel.isVertical = true;
         panel.horizontalAlignment =
-          BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
-        panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+          BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
         advancedTexture.addControl(panel);
-
-        var textBlock = new BABYLON.GUI.TextBlock();
-        textBlock.text = "Diffuse color:";
-        textBlock.height = "30px";
-        panel.addControl(textBlock);
 
         var picker = new BABYLON.GUI.ColorPicker();
         picker.value = spheremat.diffuseColor;
-        picker.height = "150px";
-        picker.width = "150px";
+        picker.height = "300px";
+        picker.width = "300px";
         picker.horizontalAlignment =
           BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
         picker.onValueChangedObservable.add(function (value) {
@@ -121,10 +109,6 @@
         });
 
         panel.addControl(picker);
-
-        document.getElementById("testDiv").onclick = () => {
-          spheremat.diffuseColor = new BABYLON.Color3.FromHexString("#ffff00");
-        };
 
         const xr = await scene.createDefaultXRExperienceAsync({
           uiOptions: {
