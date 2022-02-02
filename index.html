@@ -41,6 +41,7 @@
         background-color: red;
         position: absolute;
         left: 20%;
+        top: 20%;
       }
     </style>
   </head>
@@ -120,6 +121,10 @@
         });
 
         panel.addControl(picker);
+
+        document.getElementById("testDiv").onclick = () => {
+          spheremat.diffuseColor = new BABYLON.Color3.FromHexString("#ffff00");
+        };
 
         const xr = await scene.createDefaultXRExperienceAsync({
           uiOptions: {
