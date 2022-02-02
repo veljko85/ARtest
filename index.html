@@ -89,6 +89,7 @@
           var torba = result.meshes[0];
           //   torba.rotationQuaternion = null;
           torba.scaling = new BABYLON.Vector3(5, 5, 5);
+          torba.position = new BABYLON.Vector3(0, 0, 0);
 
           scene.animationGroups
             .find((a) => a.name === "teloAction.001")
