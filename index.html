@@ -161,11 +161,11 @@
           gui.addControl(button);
         });
 
-        // const xr = await scene.createDefaultXRExperienceAsync({
-        //   uiOptions: {
-        //     sessionMode: "immersive-ar",
-        //   },
-        // });
+        const xr = await scene.createDefaultXRExperienceAsync({
+          uiOptions: {
+            sessionMode: "immersive-ar",
+          },
+        });
 
         return scene;
       };
