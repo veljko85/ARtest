@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <title>AR Test</title>
 
@@ -71,44 +69,94 @@
         );
         camera.setTarget(BABYLON.Vector3.Zero());
         camera.attachControl(canvas, true);
-        var light = new BABYLON.HemisphericLight(
-          "light1",
-          new BABYLON.Vector3(0, 1, 0),
+        // var light = new BABYLON.HemisphericLight(
+        //   "light1",
+        //   new BABYLON.Vector3(0, 1, 0),
+        //   scene
+        // );
+        // light.intensity = 0.7;
+
+        scene.environmentTexture = new BABYLON.CubeTexture(
+          "https://raw.githubusercontent.com/veljko85/environments/gh-pages/environment.env",
           scene
         );
-        light.intensity = 0.7;
-        var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
-        sphere.position.y = 2;
-        sphere.position.z = 5;
 
-        var spheremat = new BABYLON.StandardMaterial("boxmat", scene);
-        spheremat.diffuseColor = new BABYLON.Color3.FromHexString("#ff0000");
-        sphere.material = spheremat;
+        BABYLON.SceneLoader.ImportMeshAsync(
+          "",
+          "https://raw.githubusercontent.com/veljko85/GucciSylvieBag/gh-pages/meshes/",
+          "torba7.glb"
+        ).then((result) => {
+          var torba = result.meshes[0];
+          //   torba.rotationQuaternion = null;
+          torba.scaling = new BABYLON.Vector3(5, 5, 5);
 
-        // GUI
-        var advancedTexture =
-          BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+          scene.animationGroups
+            .find((a) => a.name === "teloAction.001")
+            .stop(true, 1, 0);
 
-        var panel = new BABYLON.GUI.StackPanel();
-        panel.width = "300px";
-        panel.isVertical = true;
-        panel.horizontalAlignment =
-          BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
-        advancedTexture.addControl(panel);
+          var teloMaterials = [
+            "braon_koza",
+            "plavi_tekstil",
+            "sare_tekstil",
+            "telo",
+          ];
 
-        var picker = new BABYLON.GUI.ColorPicker();
-        picker.value = spheremat.diffuseColor;
-        picker.height = "300px";
-        picker.width = "300px";
-        picker.horizontalAlignment =
-          BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
-        picker.onValueChangedObservable.add(function (value) {
-          // value is a color3
-          spheremat.diffuseColor.copyFrom(value);
+          for (let i = 0; i < teloMaterials.length; i++) {
+            scene.getMaterialByID(teloMaterials[i]).ambientTexture =
+              new BABYLON.Texture(
+                "https://raw.githubusercontent.com/veljko85/GucciSylvieBag/gh-pages/textures/telo.png",
+                scene
+              );
+            scene.getMaterialByID(teloMaterials[i]).ambientTexture.uScale = 1; //and/or the following for vScale:
+            scene.getMaterialByID(teloMaterials[i]).ambientTexture.vScale = -1; //(-1.0 or some other value)
+
+            // scene.getMaterialByID(teloMaterials[i]).environmentIntensity = 0;
+          }
+
+          scene.getMaterialByID("masne").ambientTexture = new BABYLON.Texture(
+            "https://raw.githubusercontent.com/veljko85/GucciSylvieBag/gh-pages/textures/masne.png",
+            scene
+          );
+          scene.getMaterialByID("masne").ambientTexture.uScale = 1; //and/or the following for vScale:
+          scene.getMaterialByID("masne").ambientTexture.vScale = -1; //(-1.0 or some other value)
+
+          var gui =
+            BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("myUI");
+          var button = BABYLON.GUI.Button.CreateSimpleButton(
+            "button",
+            "Black Bag"
+          );
+          button.verticalAlignment =
+            BABYLON.GUI.Control.VERTICAL_ALIGNMENT_BOTTOM;
+          button.top = "0px";
+          button.left = "0px";
+          button.width = 0.2;
+          button.height = 0.1;
+          button.cornerRadius = 20;
+          button.thickness = 4;
+          button.children[0].color = "#DFF9FB";
+          button.children[0].fontSize = 24;
+          button.color = "#FF7979";
+          button.background = "#EB4D4B";
+
+          var clicks = 0;
+          button.onPointerClickObservable.add(function () {
+            setTimeout(function () {
+              scene.getMeshByName("telo_primitive0").material =
+                scene.getMaterialByID("braon_koza");
+              scene.getMeshByName("telo_primitive4").material =
+                scene.getMaterialByID("braon_koza_rucka");
+              scene.getMaterialByID("braon_koza").albedoColor =
+                BABYLON.Color3.FromHexString("#000000");
+              scene.getMaterialByID("sav").albedoColor =
+                BABYLON.Color3.FromHexString("#000000");
+            }, 500);
+            scene.animationGroups
+              .find((a) => a.name === "teloAction.001")
+              .start(false, 1, 0);
+          });
+          gui.addControl(button);
         });
-
-        panel.addControl(picker);
 
         const xr = await scene.createDefaultXRExperienceAsync({
           uiOptions: {
