@@ -35,12 +35,29 @@
         height: 100%;
         touch-action: none;
       }
+      #testDiv {
+        width: 100px;
+        height: 100px;
+        background-color: red;
+        position: absolute;
+        left: 20%;
+        top: 20%;
+      }
     </style>
   </head>
   <body>
     <canvas id="renderCanvas"></canvas>
+    <div id="testDiv"></div>
     <script>
       var canvas = document.getElementById("renderCanvas");
+
+      var startRenderLoop = function (engine, canvas) {
+        engine.runRenderLoop(function () {
+          if (sceneToRender && sceneToRender.activeCamera) {
+            sceneToRender.render();
+          }
+        });
+      };
 
       var engine = null;
       var scene = null;
@@ -67,28 +84,47 @@
           scene
         );
         light.intensity = 0.7;
+        var sphere = BABYLON.Mesh.CreateSphere("sphere1", 16, 2, scene);
+        sphere.position.y = 2;
+        sphere.position.z = 5;
 
-        // BABYLON.SceneLoader.ImportMeshAsync(
-        //   "",
-        //   "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/pizza_bigboss_pancho/",
-        //   "pizza.glb"
-        // ).then((result) => {
-        //   var pizza = result.meshes[0];
-        //   pizza.scaling = new BABYLON.Vector3(1.5, 1.5, 1.5);
-        //   pizza.addRotation(0, 0, 0);
-        //   pizza.position = new BABYLON.Vector3(0, 0, 1);
-        // });
+        var spheremat = new BABYLON.StandardMaterial("boxmat", scene);
+        spheremat.diffuseColor = new BABYLON.Color3.FromHexString("#ff0000");
+        sphere.material = spheremat;
 
-        BABYLON.SceneLoader.ImportMeshAsync(
-          "",
-          "https://raw.githubusercontent.com/veljko85/glbModels/gh-pages/pizza2/",
-          "pizza2.glb"
-        ).then((result) => {
-          var pizza = result.meshes[0];
-          pizza.scaling = new BABYLON.Vector3(0.02, 0.02, 0.02);
-          pizza.addRotation(0, 0, 0);
-          pizza.position = new BABYLON.Vector3(0, 0, 0);
+        // GUI
+        var advancedTexture =
+          BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+        var panel = new BABYLON.GUI.StackPanel();
+        panel.width = "200px";
+        panel.isVertical = true;
+        panel.horizontalAlignment =
+          BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        panel.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_CENTER;
+        advancedTexture.addControl(panel);
+
+        var textBlock = new BABYLON.GUI.TextBlock();
+        textBlock.text = "Diffuse color:";
+        textBlock.height = "30px";
+        panel.addControl(textBlock);
+
+        var picker = new BABYLON.GUI.ColorPicker();
+        picker.value = spheremat.diffuseColor;
+        picker.height = "150px";
+        picker.width = "150px";
+        picker.horizontalAlignment =
+          BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_CENTER;
+        picker.onValueChangedObservable.add(function (value) {
+          // value is a color3
+          spheremat.diffuseColor.copyFrom(value);
         });
+
+        panel.addControl(picker);
+
+        document.getElementById("testDiv").onclick = () => {
+          spheremat.diffuseColor = new BABYLON.Color3.FromHexString("#ffff00");
+        };
 
         const xr = await scene.createDefaultXRExperienceAsync({
           uiOptions: {
@@ -112,17 +148,12 @@
 
         window.engine = await asyncEngineCreation();
         if (!engine) throw "engine should not be null.";
+        startRenderLoop(engine, canvas);
         window.scene = createScene();
       };
       initFunction().then(() => {
         scene.then((returnedScene) => {
           sceneToRender = returnedScene;
-        });
-
-        engine.runRenderLoop(function () {
-          if (sceneToRender && sceneToRender.activeCamera) {
-            sceneToRender.render();
-          }
         });
       });
 
